@@ -2,6 +2,8 @@
 import numpy as np
 from numpy import random
 import random as rand
+from numpy.core.fromnumeric import std
+from numpy.lib.function_base import average
 import sklearn
 from sklearn import linear_model
 from sklearn.metrics import mean_squared_error
@@ -83,9 +85,9 @@ if __name__ == '__main__':
     plt.show()
     print(f"test losses are: {losses}")
     
-    #As we can see, the loss decreases when the train set size increases.
+    #As we can see, the loss decreases slowly when the train set size increases.
     #This make sense as long as the train size increases the approximated betas converge to the real betas
-    #The test set betas are draw from the real betas distribution so when the train size gets bigger the gap between the distribution gets smaller and thats why the loss decreases two. 
+    #The test set betas are draw from the real betas distribution so when the train size gets bigger the gap between the distribution gets smaller and thats why the loss decreases too. 
     ranges = []
     poissonLosses = []
     lrLosses = []
@@ -98,8 +100,9 @@ if __name__ == '__main__':
         #linear regression
         lr = linear_model.LinearRegression()
         lr.fit(xArray,yArray)
-        betas_lr = [lr.intercept_,lr.coef_[0],lr.coef_[1]]
+        betas_lr = [lr.intercept_,lr.coef_[0],lr.coef_[1]]  
         yArrayTest,xArrayTest,lamdasArrayTest = drawY(MAX_TRAIN_SIZE,X_MEAN,X_STD)
+        print(f"lamdas are: {average(lamdasArrayTest)}")
         yTestPredPoisson = clf.predict(xArrayTest)
         yTestPredLr = lr.predict(xArrayTest)
         poissonLoss = mean_squared_error(yArrayTest,yTestPredPoisson)
@@ -116,9 +119,9 @@ if __name__ == '__main__':
     # giving a title to my graph
     plt.title('MSE by train set size')
     plt.legend()
-    # calc the trendline
-    # z = np.polyfit(ranges, losses, 1)
-    # p = np.poly1d(z)
-    # pylab.plot(ranges,p(ranges),"r--")    
-    # function to show the plot
     plt.show()    
+    #As we can see, the results are very similar between the models. why?
+    #lets have a look at the lamdas from the last iteration
+    print(f"Lamdas are:{lamdasArray}, lamdas avg is:{average(lamdasArray)}, std is: {std(lamdasArray)}")
+    #the std of the lambdas is very small so no matter what  is x , y distribution will be almost identical for every x
+    #The corelation between x and y is close to zero so it doesnt matter if we will use LR or poission regression to predict y whice is mainly poisson noise.
