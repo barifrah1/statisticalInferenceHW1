@@ -24,7 +24,7 @@ def drawY(numToDraw,mean,std,b=REAL_BETAS):
     yArray = np.array(np.zeros(numToDraw));
     lamdasArray=np.array(np.zeros(numToDraw));
     normals = random.normal(mean,std,numToDraw*2)
-    xArray = np.ndarray((numToDraw,2),np.float)
+    xArray = np.ndarray((numToDraw,2),np.double)
     for i in range(0,numToDraw*2,2):
         index = int(i/2)
         lamdasArray[index] = calculateLamda(normals[i],normals[i+1],b)
